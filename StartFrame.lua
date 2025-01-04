@@ -34,7 +34,7 @@ function GetStartFrame(settings)
     -- Add a scrollable text area to the frame
     local scrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 10, -30)
-    scrollFrame:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -30, 10)
+    scrollFrame:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -30, 50)
 
     local content = CreateFrame("Frame", nil, scrollFrame)
     scrollFrame:SetScrollChild(content)
@@ -56,10 +56,41 @@ function GetStartFrame(settings)
     text:SetText("Initializing zone information...")
 
     -- Function to update text on zone change
-    local function UpdateZoneText()
-        local zoneName = GetZoneText()
-        local zoneLore = DictionaryLookup.GetLore(zoneName)
-        text:SetText("Current Zone: " .. zoneName .. "\n\n" .. zoneLore)
+    local function UpdateZoneText(zoneKey)
+        scrollFrame:SetVerticalScroll(0)
+        for _, child in ipairs({ content:GetChildren() }) do
+            child:Hide()
+        end
+        local pretext = ""
+        local currentZone = GetZoneText()
+        if zoneKey == currentZone then
+            pretext = "You are in "
+        end
+        local zoneLore = DictionaryLookup.GetLore(zoneKey)
+        text:SetText(pretext .. ColorFormat(zoneKey, Format.zoneName) .. "\n\n" .. zoneLore)
+    end
+
+    -- Function to display the list of zones
+    local function ShowZoneList()
+        scrollFrame:SetVerticalScroll(0)
+        local yOffset = -10
+
+        -- Clear previous content
+        text:SetText("")
+
+        local zoneKeys = DictionaryLookup.GetLoreKeys()
+
+        for _, zoneKey in pairs(zoneKeys) do
+            local zoneButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+            zoneButton:SetSize(200, 20)
+            zoneButton:SetPoint("TOPLEFT", content, "TOPLEFT", 10, yOffset)
+            zoneButton:SetText(zoneKey)
+            zoneButton:SetScript("OnClick", function()
+                UpdateZoneText(zoneKey)
+            end)
+            yOffset = yOffset - 30
+        end
+
     end
 
     -- Register for zone change updates
@@ -68,12 +99,14 @@ function GetStartFrame(settings)
     MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     MainFrame:SetScript("OnEvent", function(self, event)
         if event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or event == "ZONE_CHANGED_NEW_AREA" then
-            UpdateZoneText()
+            local zoneName = GetZoneText()
+            UpdateZoneText(zoneName)
         end
     end)
 
     -- Initial update
-    UpdateZoneText()
+    local zoneName = GetZoneText()
+    UpdateZoneText(zoneName)
 
     -- Add a resize handle (bottom-right corner)
     local resizeHandle = CreateFrame("Button", nil, MainFrame)
@@ -99,6 +132,25 @@ function GetStartFrame(settings)
         if height < minHeight then
             self:SetHeight(minHeight)
         end
+    end)
+
+    -- Add a button to show the list of zones
+    local ListButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")
+    ListButton:SetSize(100, 25)
+    ListButton:SetPoint("BOTTOMLEFT", MainFrame, "BOTTOMLEFT", 10, 10)
+    ListButton:SetText("Zone List")
+    ListButton:SetScript("OnClick", function ()
+        ShowZoneList()
+    end)
+
+    -- Add a button to return to the current zone
+    local CurrentZoneButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")
+    CurrentZoneButton:SetSize(100, 25)
+    CurrentZoneButton:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -10, 10)
+    CurrentZoneButton:SetText("Current Zone")
+    CurrentZoneButton:SetScript("OnClick", function ()
+        zoneName = GetZoneText()
+        UpdateZoneText(zoneName)
     end)
 
     return MainFrame

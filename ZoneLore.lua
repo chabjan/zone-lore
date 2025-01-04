@@ -8,6 +8,7 @@ local defaultSettings = {
     width = 300,
     height = 200,
     alpha = 0.8,
+    closed = false,
 }
 
 -- Initialize or load saved settings
@@ -34,15 +35,21 @@ MyAddon:SetScript("OnEvent", function(self, event, ...)
         -- Pass settings to the frame creation function
         local frame = GetStartFrame(BaseFrameSettings)
 
-        frame:Show() -- Show the frame when the player logs in
+        if BaseFrameSettings.closed then
+            frame:Hide()
+        else
+            frame:Show()
+        end -- Show the frame when the player logs in
 
         -- Slash command to toggle frame visibility
         SLASH_ZONELORE1 = "/zonelore"
         SlashCmdList["ZONELORE"] = function()
             if frame:IsShown() then
                 frame:Hide()
+                BaseFrameSettings.closed = true
             else
                 frame:Show()
+                BaseFrameSettings.closed = false
             end
         end
 
@@ -58,8 +65,10 @@ MyAddon:SetScript("OnEvent", function(self, event, ...)
             OnClick = function()
                 if frame:IsShown() then
                     frame:Hide()
+                    BaseFrameSettings.closed = true
                 else
                     frame:Show()
+                    BaseFrameSettings.closed = false
                 end
             end,
         })
