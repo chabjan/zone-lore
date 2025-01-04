@@ -1,0 +1,10 @@
+## Interface: 11505
+## Title: Zone Lore
+## Notes: Addon that displays lore of the zone the player is currently in.
+## Author: lulwfrost
+## Version: 1.0
+## SavedVariables: BaseFrameSettings, ZLoreDB
+
+LoreDictionary.lua
+StartFrame.lua
+ZoneLore.lua
