@@ -2,4 +2,4 @@ package-as: ZoneLore
 
 manual-changelog:
   filename: CHANGELOG.md
-  markup-type: text
+  markup-type: markdown

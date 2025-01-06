@@ -1,4 +1,4 @@
-**v1.1.2**
+**v1.1.4**
 
 - fixed remembering hidden addon window
 - fixed switching to current on subzone change
