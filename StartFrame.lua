@@ -5,6 +5,14 @@ function GetStartFrame(settings)
     MainFrame:SetPoint(settings.point, settings.relativeTo, settings.relativePoint, settings.xOfs, settings.yOfs)
     MainFrame:SetResizable(true)
     MainFrame:SetAlpha(settings.alpha)
+    MainFrame:SetScript("OnHide", function(self)
+        -- Save closed settings
+        BaseFrameSettings.closed = true
+    end)
+    MainFrame:SetScript("OnShow", function(self)
+        -- Save closed settings
+        BaseFrameSettings.closed = false
+    end)
 
     -- Enable mouse interaction
     MainFrame:EnableMouse(true)
@@ -94,11 +102,11 @@ function GetStartFrame(settings)
     end
 
     -- Register for zone change updates
-    MainFrame:RegisterEvent("ZONE_CHANGED")
-    MainFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
+    -- MainFrame:RegisterEvent("ZONE_CHANGED")
+    -- MainFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
     MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     MainFrame:SetScript("OnEvent", function(self, event)
-        if event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or event == "ZONE_CHANGED_NEW_AREA" then
+        if --[[event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or]] event == "ZONE_CHANGED_NEW_AREA" then
             local zoneName = GetZoneText()
             UpdateZoneText(zoneName)
         end
