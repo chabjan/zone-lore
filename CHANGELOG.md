@@ -1,4 +1,3 @@
-**v1.1.4**
+**v1.1.5**
 
-- fixed remembering hidden addon window
-- fixed switching to current on subzone change
+- fixed spam zone list crashing the addon

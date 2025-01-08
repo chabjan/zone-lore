@@ -6,21 +6,17 @@ function GetStartFrame(settings)
     MainFrame:SetResizable(true)
     MainFrame:SetAlpha(settings.alpha)
     MainFrame:SetScript("OnHide", function(self)
-        -- Save closed settings
         BaseFrameSettings.closed = true
     end)
     MainFrame:SetScript("OnShow", function(self)
-        -- Save closed settings
         BaseFrameSettings.closed = false
     end)
 
-    -- Enable mouse interaction
     MainFrame:EnableMouse(true)
     MainFrame:SetMovable(true)
     MainFrame:RegisterForDrag("LeftButton")
     MainFrame:SetClampedToScreen(true)
 
-    -- Dragging behavior
     MainFrame:SetScript("OnDragStart", function(self)
         if self:IsMovable() then
             self:StartMoving()
@@ -34,12 +30,10 @@ function GetStartFrame(settings)
         BaseFrameSettings.xOfs, BaseFrameSettings.yOfs = self:GetPoint()
     end)
 
-    -- Add a title to the frame
     MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
     MainFrame.title:SetPoint("TOP", MainFrame, "TOP", 0, -5)
     MainFrame.title:SetText("ZoneLore")
 
-    -- Add a scrollable text area to the frame
     local scrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 10, -30)
     scrollFrame:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -30, 50)
@@ -63,7 +57,6 @@ function GetStartFrame(settings)
     text:SetJustifyV("TOP")
     text:SetText("Initializing zone information...")
 
-    -- Function to update text on zone change
     local function UpdateZoneText(zoneKey)
         scrollFrame:SetVerticalScroll(0)
         for _, child in ipairs({ content:GetChildren() }) do
@@ -78,8 +71,10 @@ function GetStartFrame(settings)
         text:SetText(pretext .. ColorFormat(zoneKey, Format.zoneName) .. "\n\n" .. zoneLore)
     end
 
-    -- Function to display the list of zones
     local function ShowZoneList()
+        for _, child in ipairs({ content:GetChildren() }) do
+            child:Hide()
+        end
         scrollFrame:SetVerticalScroll(0)
         local yOffset = -10
 
