@@ -1,8 +1,8 @@
 ## Interface: 11505
 ## Title: Zone Lore
-## Notes: Addon that displays lore of the zone the player is currently in.
+## Notes: Displays lore of locations, zones and instances.
 ## Author: lulwfrost
-## Version: 1.1.5
+## Version: 1.1.6
 ## SavedVariables: BaseFrameSettings, ZLoreDB
 
 LoreDictionary.lua

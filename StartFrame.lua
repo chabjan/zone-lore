@@ -12,17 +12,16 @@ function GetStartFrame(settings)
         BaseFrameSettings.closed = false
     end)
 
+    -- Drag logic
     MainFrame:EnableMouse(true)
     MainFrame:SetMovable(true)
     MainFrame:RegisterForDrag("LeftButton")
     MainFrame:SetClampedToScreen(true)
-
     MainFrame:SetScript("OnDragStart", function(self)
         if self:IsMovable() then
             self:StartMoving()
         end
     end)
-
     MainFrame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         -- Save the new position
@@ -30,14 +29,43 @@ function GetStartFrame(settings)
         BaseFrameSettings.xOfs, BaseFrameSettings.yOfs = self:GetPoint()
     end)
 
+    -- Resize handle and logic
+    local resizeHandle = CreateFrame("Button", nil, MainFrame)
+    resizeHandle:SetSize(10, 10)
+    resizeHandle:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -5, 5)
+    resizeHandle:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    resizeHandle:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    resizeHandle:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    resizeHandle:SetScript("OnMouseDown", function()
+        MainFrame:StartSizing("BOTTOMRIGHT")
+    end)
+    resizeHandle:SetScript("OnMouseUp", function()
+        MainFrame:StopMovingOrSizing()
+        BaseFrameSettings.width = MainFrame:GetWidth()
+        BaseFrameSettings.height = MainFrame:GetHeight()
+    end)
+
+    MainFrame:SetScript("OnSizeChanged", function(self, width, height)
+        local minWidth, minHeight = 230, 115
+        if width < minWidth then
+            self:SetWidth(minWidth)
+        end
+        if height < minHeight then
+            self:SetHeight(minHeight)
+        end
+    end)
+
+    -- Title
     MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
     MainFrame.title:SetPoint("TOP", MainFrame, "TOP", 0, -5)
     MainFrame.title:SetText("ZoneLore")
 
+    -- Scroll frame
     local scrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 10, -30)
     scrollFrame:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -30, 50)
 
+    -- Content frame
     local content = CreateFrame("Frame", nil, scrollFrame)
     scrollFrame:SetScrollChild(content)
     content:SetSize(scrollFrame:GetWidth(), scrollFrame:GetHeight())
@@ -46,6 +74,7 @@ function GetStartFrame(settings)
         content:SetSize(self:GetWidth(), self:GetHeight())
     end)
 
+    -- Content text
     local text = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     text:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
     text:SetWidth(content:GetWidth())
@@ -57,6 +86,7 @@ function GetStartFrame(settings)
     text:SetJustifyV("TOP")
     text:SetText("Initializing zone information...")
 
+    -- Function to update the zone text
     local function UpdateZoneText(zoneKey)
         scrollFrame:SetVerticalScroll(0)
         for _, child in ipairs({ content:GetChildren() }) do
@@ -71,6 +101,7 @@ function GetStartFrame(settings)
         text:SetText(pretext .. ColorFormat(zoneKey, Format.zoneName) .. "\n\n" .. zoneLore)
     end
 
+    -- Function to show the list of zones
     local function ShowZoneList()
         for _, child in ipairs({ content:GetChildren() }) do
             child:Hide()
@@ -99,6 +130,7 @@ function GetStartFrame(settings)
     -- Register for zone change updates
     -- MainFrame:RegisterEvent("ZONE_CHANGED")
     -- MainFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
+    -- Only major zone change ^^
     MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     MainFrame:SetScript("OnEvent", function(self, event)
         if --[[event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or]] event == "ZONE_CHANGED_NEW_AREA" then
@@ -110,32 +142,6 @@ function GetStartFrame(settings)
     -- Initial update
     local zoneName = GetZoneText()
     UpdateZoneText(zoneName)
-
-    -- Add a resize handle (bottom-right corner)
-    local resizeHandle = CreateFrame("Button", nil, MainFrame)
-    resizeHandle:SetSize(10, 10)
-    resizeHandle:SetPoint("BOTTOMRIGHT", MainFrame, "BOTTOMRIGHT", -5, 5)
-    resizeHandle:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-    resizeHandle:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-    resizeHandle:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-    resizeHandle:SetScript("OnMouseDown", function()
-        MainFrame:StartSizing("BOTTOMRIGHT")
-    end)
-    resizeHandle:SetScript("OnMouseUp", function()
-        MainFrame:StopMovingOrSizing()
-        BaseFrameSettings.width = MainFrame:GetWidth()
-        BaseFrameSettings.height = MainFrame:GetHeight()
-    end)
-
-    MainFrame:SetScript("OnSizeChanged", function(self, width, height)
-        local minWidth, minHeight = 230, 115
-        if width < minWidth then
-            self:SetWidth(minWidth)
-        end
-        if height < minHeight then
-            self:SetHeight(minHeight)
-        end
-    end)
 
     -- Add a button to show the list of zones
     local ListButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")

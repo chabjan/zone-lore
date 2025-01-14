@@ -1,3 +1,3 @@
-**v1.1.5**
+**v1.1.6**
 
-- fixed spam zone list crashing the addon
+- small fixes
