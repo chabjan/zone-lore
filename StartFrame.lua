@@ -130,7 +130,7 @@ function GetStartFrame(settings)
     -- Register for zone change updates
     -- MainFrame:RegisterEvent("ZONE_CHANGED")
     -- MainFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
-    -- Only major zone change ^^
+    -- Only major zone change ^^ gonna add subzones in later patches
     MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     MainFrame:SetScript("OnEvent", function(self, event)
         if --[[event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or]] event == "ZONE_CHANGED_NEW_AREA" then

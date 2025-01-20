@@ -2,7 +2,7 @@
 ## Title: Zone Lore
 ## Notes: Displays lore of locations, zones and instances.
 ## Author: lulwfrost
-## Version: 1.1.6
+## Version: 1.1.7
 ## SavedVariables: BaseFrameSettings, ZLoreDB
 
 LoreDictionary.lua
