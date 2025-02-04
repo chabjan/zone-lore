@@ -1,8 +1,8 @@
-## Interface: 11505
+## Interface: 11505, 11506
 ## Title: Zone Lore
 ## Notes: Displays lore of locations, zones and instances.
 ## Author: lulwfrost
-## Version: 1.1.7
+## Version: 1.1.8
 ## SavedVariables: BaseFrameSettings, ZLoreDB
 
 LoreDictionary.lua
