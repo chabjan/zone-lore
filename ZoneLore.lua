@@ -35,11 +35,12 @@ MyAddon:SetScript("OnEvent", function(self, event, ...)
         -- Pass settings to the frame creation function
         local frame = GetStartFrame(BaseFrameSettings)
 
+        -- Show the frame when the player logs in
         if BaseFrameSettings.closed then
             frame:Hide()
         else
             frame:Show()
-        end -- Show the frame when the player logs in
+        end
 
         -- Slash command to toggle frame visibility
         SLASH_ZONELORE1 = "/zonelore"
